@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>English Study — Admin Panel</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- ============================== PASSWORD GATE ============================== -->
+  <div id="gate" class="gate">
+    <div class="gate-bg" aria-hidden="true">
+      <span class="gate-grid"></span>
+      <span class="gate-glow gate-glow-a"></span>
+      <span class="gate-glow gate-glow-b"></span>
+    </div>
+    <div class="gate-stage">
+      <form id="gateForm" class="gate-card" novalidate autocomplete="off">
+        <div class="gate-shield" aria-hidden="true">🛡️</div>
+        <h1 id="gateTitle">অ্যাডমিন লগইন</h1>
+        <p id="gateSubtitle" class="gate-subtitle">শুধুমাত্র সঠিক অ্যাডমিন পাসওয়ার্ড দিয়েই এই প্যানেলে প্রবেশ করা যায়।</p>
+
+        <label class="gate-field" for="gatePassword">
+          <span class="gate-label">অ্যাডমিন পাসওয়ার্ড</span>
+          <span class="gate-input">
+            <span class="gate-input-icon" aria-hidden="true">🔑</span>
+            <input id="gatePassword" type="password" autocomplete="off" placeholder="আপনার গোপন অ্যাডমিন পাসওয়ার্ড" spellcheck="false">
+            <button class="gate-eye" type="button" data-eye="gatePassword" aria-label="পাসওয়ার্ড দেখুন">👁</button>
+          </span>
+        </label>
+
+        <label id="gateConfirmWrap" class="gate-field" for="gateConfirm" hidden>
+          <span class="gate-label">পাসওয়ার্ড আবার লিখুন</span>
+          <span class="gate-input">
+            <span class="gate-input-icon" aria-hidden="true">🔁</span>
+            <input id="gateConfirm" type="password" autocomplete="off" placeholder="একই পাসওয়ার্ড" spellcheck="false">
+          </span>
+        </label>
+
+        <div id="gateStrength" class="gate-strength" hidden>
+          <span class="gate-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span id="gateStrengthText">পাসওয়ার্ড শক্তি</span>
+        </div>
+
+        <div id="gateError" class="gate-error" role="alert" hidden></div>
+        <p id="gateLock" class="gate-note" hidden></p>
+        <p id="gateSetup" class="gate-note" hidden>
+          প্রথমবার ব্যবহার: এখানে একটি শক্তিশালী অ্যাডমিন পাসওয়ার্ড সেট করুন। পাসওয়ার্ড শুধু PBKDF2 হ্যাশ হিসেবে এই ব্রাউজারে সংরক্ষিত হবে।
+        </p>
+
+        <button id="gateSubmit" class="gate-btn" type="submit">
+          <span id="gateSubmitLabel">প্রবেশ করুন</span>
+          <span aria-hidden="true">→</span>
+        </button>
+
+        <div class="gate-foot">
+          <span>🔐 মেমরি-শুধু সেশন • নিষ্ক্রিয় থাকলে স্বয়ংক্রিয় লগআউট</span>
+        </div>
+        <div class="gate-links">
+          <button id="gateCloseBtn" class="gate-link" type="button">ট্যাব বন্ধ করুন</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================== ADMIN SHELL ============================== -->
+  <div id="panel" class="shell" hidden>
+    <aside class="sidebar">
+      <div class="side-brand">
+        <div class="side-logo" aria-hidden="true">A<span>অ</span></div>
+        <div class="side-brand-copy">
+          <strong>English Study</strong>
+          <span>Admin Control</span>
+        </div>
+      </div>
+
+      <nav class="side-nav" aria-label="অ্যাডমিন মেনু">
+        <button class="nav-item active" type="button" data-view="dashboard">
+          <span class="nav-icon">📊</span>
+          <span><strong>ড্যাশবোর্ড</strong><small>সারসংক্ষেপ</small></span>
+        </button>
+        <button class="nav-item" type="button" data-view="users">
+          <span class="nav-icon">👥</span>
+          <span><strong>ইউজার</strong><small>মেয়াদ ও অ্যাক্সেস</small></span>
+        </button>
+        <button class="nav-item" type="button" data-view="promos">
+          <span class="nav-icon">🎟️</span>
+          <span><strong>প্রোমো কোড</strong><small>তৈরি ও ব্যবস্থাপনা</small></span>
+        </button>
+        <button class="nav-item" type="button" data-view="logs">
+          <span class="nav-icon">🧾</span>
+          <span><strong>লগস</strong><small>ডিভাইস, IP, অ্যাক্টিভিটি</small></span>
+        </button>
+        <button class="nav-item" type="button" data-view="security">
+          <span class="nav-icon">🔐</span>
+          <span><strong>নিরাপত্তা</strong><small>অ্যাডমিন পাসওয়ার্ড</small></span>
+        </button>
+        <button class="nav-item" type="button" data-view="settings">
+          <span class="nav-icon">⚙️</span>
+          <span><strong>সেটিংস</strong><small>পলিসি ও সীমা</small></span>
+        </button>
+      </nav>
+
+      <div class="side-foot">
+        <div id="sideDevice" class="side-device">—</div>
+        <button id="sideLockBtn" class="side-lock" type="button">🔒 লক করুন</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-copy">
+          <h1 id="viewTitle">ড্যাশবোর্ড</h1>
+          <p id="viewSubtitle">সব ইউজার, মেয়াদ, প্রোমো ও লগ এক জায়গায়।</p>
+        </div>
+        <div class="topbar-actions">
+          <span id="sessionChip" class="session-chip" title="নিষ্ক্রিয় থাকলে স্বয়ংক্রিয় লগআউট">⏱ —</span>
+          <button id="refreshBtn" class="ghost-btn" type="button">↻ রিফ্রেশ</button>
+        </div>
+      </header>
+
+      <div id="idleBar" class="idle-bar" hidden>⏳ নিরাপত্তার জন্য শীঘ্রই স্বয়ংক্রিয় লগআউট হবে। চালিয়ে যেতে পেজে ক্লিক করুন।</div>
+
+      <!-- Dashboard -->
+      <section id="view-dashboard" class="view">
+        <div class="stat-grid">
+          <article class="stat-card"><span class="stat-icon">👥</span><div><strong id="statTotal">—</strong><span>মোট ইউজার</span></div></article>
+          <article class="stat-card good"><span class="stat-icon">✅</span><div><strong id="statActive">—</strong><span>সক্রিয়</span></div></article>
+          <article class="stat-card warn"><span class="stat-icon">⏳</span><div><strong id="statExpired">—</strong><span>মেয়াদোত্তীর্ণ</span></div></article>
+          <article class="stat-card bad"><span class="stat-icon">⛔</span><div><strong id="statBlocked">—</strong><span>ব্যান / সাসপেন্ড</span></div></article>
+          <article class="stat-card"><span class="stat-icon">🆕</span><div><strong id="statToday">—</strong><span>আজ নতুন</span></div></article>
+          <article class="stat-card"><span class="stat-icon">🔓</span><div><strong id="statLogins">—</strong><span>আজ লগইন</span></div></article>
+          <article class="stat-card"><span class="stat-icon">🎟️</span><div><strong id="statPromos">—</strong><span>সক্রিয় প্রোমো</span></div></article>
+          <article class="stat-card"><span class="stat-icon">📈</span><div><strong id="statWeek">—</strong><span>এক সপ্তাহে নতুন</span></div></article>
+        </div>
+
+        <div class="dash-grid">
+          <section class="panel-card">
+            <header class="panel-head">
+              <h2>সাম্প্রতিক অ্যাক্টিভিটি</h2>
+              <button class="link-btn" type="button" data-go="logs">সব দেখুন →</button>
+            </header>
+            <ul id="recentList" class="recent-list"><li class="empty-row">লোড হচ্ছে…</li></ul>
+          </section>
+
+          <section class="panel-card">
+            <header class="panel-head"><h2>দ্রুত কাজ</h2></header>
+            <div class="quick-grid">
+              <button type="button" class="quick-btn" data-go="users">👥 ইউজার মেয়াদ বাড়ান</button>
+              <button type="button" class="quick-btn" data-go="promos">🎟️ নতুন প্রোমো কোড</button>
+              <button type="button" class="quick-btn" data-go="logs">🧾 ডিভাইস ও IP লগ</button>
+              <button type="button" class="quick-btn" data-go="security">🔑 অ্যাডমিন পাসওয়ার্ড</button>
+            </div>
+            <div class="device-box">
+              <h3>এই ডিভাইস</h3>
+              <dl>
+                <div><dt>ডিভাইস</dt><dd id="dashDevice">—</dd></div>
+                <div><dt>আইপি / লোকেশন</dt><dd id="dashNetwork">—</dd></div>
+                <div><dt>অ্যাডমিন সেশন</dt><dd id="dashSession">—</dd></div>
+                <div><dt>মানফর্ম ফাইল</dt><dd id="dashManifest">—</dd></div>
+              </dl>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- Users -->
+      <section id="view-users" class="view" hidden>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <span aria-hidden="true">🔍</span>
+            <input id="userSearch" type="search" placeholder="নাম, ইমেইল, ফোন বা ইউজারনেম…" autocomplete="off">
+          </div>
+          <select id="userStatus" aria-label="স্ট্যাটাস ফিল্টার">
+            <option value="all">সব স্ট্যাটাস</option>
+            <option value="active">সক্রিয়</option>
+            <option value="expired">মেয়াদোত্তীর্ণ</option>
+            <option value="banned">ব্যান</option>
+            <option value="suspended">সাসপেন্ড</option>
+            <option value="trial">ট্রায়াল</option>
+          </select>
+          <select id="userSort" aria-label="সাজানোর ধরন">
+            <option value="newest">নতুন আগে</option>
+            <option value="oldest">পুরনো আগে</option>
+            <option value="expiry">মেয়াদ শেষ আগে</option>
+            <option value="name">নাম অনুযায়ী</option>
+            <option value="login">সর্বশেষ লগইন</option>
+          </select>
+          <button id="userCsvBtn" class="ghost-btn" type="button">⬇ CSV</button>
+        </div>
+        <p id="userSummary" class="summary-line">—</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ইউজার</th>
+                <th>যোগাযোগ</th>
+                <th>স্ট্যাটাস</th>
+                <th>মেয়াদ</th>
+                <th>শেষ লগইন</th>
+                <th>ডিভাইস</th>
+                <th>কাজ</th>
+              </tr>
+            </thead>
+            <tbody id="usersBody"><tr><td colspan="7" class="empty-row">লোড হচ্ছে…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Promos -->
+      <section id="view-promos" class="view" hidden>
+        <form id="promoForm" class="panel-card create-card" novalidate>
+          <header class="panel-head"><h2>🎟️ নতুন প্রোমো কোড</h2><span>কোড ব্যবহার করলে ইউজারের মেয়াদ নির্দিষ্ট দিন বাড়বে</span></header>
+          <div class="form-grid">
+            <label class="form-field">
+              <span>কোড <em>আবশ্যক</em></span>
+              <input id="promoCode" type="text" placeholder="STUDY7" maxlength="24" autocomplete="off" spellcheck="false">
+            </label>
+            <label class="form-field">
+              <span>মেয়াদ বৃদ্ধি (দিন) <em>আবশ্যক</em></span>
+              <input id="promoDays" type="number" min="1" max="3650" value="7" inputmode="numeric">
+            </label>
+            <label class="form-field">
+              <span>সর্বোচ্চ ব্যবহার <em>০ = সীমাহীন</em></span>
+              <input id="promoMaxUses" type="number" min="0" max="1000000" value="0" inputmode="numeric">
+            </label>
+            <label class="form-field">
+              <span>কোডের মেয়াদ শেষ <em>ঐচ্ছিক</em></span>
+              <input id="promoExpiry" type="date">
+            </label>
+            <label class="form-field wide">
+              <span>নোট <em>ঐচ্ছিক</em></span>
+              <input id="promoNote" type="text" placeholder="যেমন: ঈদ অফার" maxlength="120">
+            </label>
+          </div>
+          <div class="form-actions">
+            <button id="promoCreateBtn" class="primary-btn" type="submit">✨ কোড তৈরি করুন</button>
+          </div>
+          <div id="promoMessage" class="form-message" role="status" hidden></div>
+        </form>
+
+        <p id="promoSummary" class="summary-line">—</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>কোড</th>
+                <th>দিন</th>
+                <th>ব্যবহার</th>
+                <th>কোডের মেয়াদ</th>
+                <th>স্ট্যাটাস</th>
+                <th>তৈরি</th>
+                <th>কাজ</th>
+              </tr>
+            </thead>
+            <tbody id="promosBody"><tr><td colspan="7" class="empty-row">লোড হচ্ছে…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Logs -->
+      <section id="view-logs" class="view" hidden>
+        <div class="toolbar logs-toolbar">
+          <select id="logGroup" aria-label="লগ ধরন">
+            <option value="all">সব লগ</option>
+            <option value="security">নিরাপত্তা (লগইন/পাসওয়ার্ড)</option>
+            <option value="user">ইউজার লগ</option>
+            <option value="activity">অ্যাপ অ্যাক্টিভিটি</option>
+            <option value="admin">অ্যাডমিন লগ</option>
+          </select>
+          <div class="search-wrap">
+            <span aria-hidden="true">🔍</span>
+            <input id="logSearch" type="search" placeholder="নাম, আইপি, ডিভাইস, কাজ…" autocomplete="off">
+          </div>
+          <label class="date-field">শুরু <input id="logFrom" type="date"></label>
+          <label class="date-field">শেষ <input id="logTo" type="date"></label>
+          <button id="logApplyBtn" class="primary-btn small" type="button">ফিল্টার</button>
+          <button id="logCsvBtn" class="ghost-btn" type="button">⬇ CSV</button>
+          <button id="logClearBtn" class="danger-btn" type="button">🗑 লগ মুছুন</button>
+        </div>
+        <p id="logSummary" class="summary-line">—</p>
+        <div class="table-wrap logs-wrap">
+          <table class="data-table logs-table">
+            <thead>
+              <tr>
+                <th>সময়</th>
+                <th>কাজ</th>
+                <th>ব্যক্তি</th>
+                <th>ডিভাইস</th>
+                <th>আইপি / লোকেশন</th>
+                <th>বিবরণ</th>
+              </tr>
+            </thead>
+            <tbody id="logsBody"><tr><td colspan="6" class="empty-row">লোড হচ্ছে…</td></tr></tbody>
+          </table>
+        </div>
+        <p class="summary-line muted">নিরাপত্তা: পাসওয়ার্ড কখনো লগে রাখা হয় না — শুধু হ্যাশ যাচাই ও ঘটনার বিবরণ সংরক্ষিত হয়।</p>
+      </section>
+
+      <!-- Security -->
+      <section id="view-security" class="view" hidden>
+        <div class="two-col">
+          <form id="securityForm" class="panel-card" novalidate>
+            <header class="panel-head"><h2>🔑 অ্যাডমিন পাসওয়ার্ড পরিবর্তন</h2><span>শুধু এখান থেকেই নতুন পাসওয়ার্ড সেভ হবে</span></header>
+            <label class="form-field">
+              <span>বর্তমান পাসওয়ার্ড</span>
+              <input id="secCurrent" type="password" autocomplete="off" placeholder="বর্তমান অ্যাডমিন পাসওয়ার্ড">
+            </label>
+            <label class="form-field">
+              <span>নতুন পাসওয়ার্ড <em>কমপক্ষে ১০ অক্ষর, চিহ্নসহ</em></span>
+              <input id="secNew" type="password" autocomplete="new-password" placeholder="নতুন শক্তিশালী পাসওয়ার্ড">
+            </label>
+            <label class="form-field">
+              <span>নতুন পাসওয়ার্ড আবার</span>
+              <input id="secConfirm" type="password" autocomplete="new-password" placeholder="একই পাসওয়ার্ড">
+            </label>
+            <div id="secStrength" class="gate-strength"><span class="gate-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span id="secStrengthText">পাসওয়ার্ড শক্তি</span></div>
+            <div id="secMessage" class="form-message" role="alert" hidden></div>
+            <div class="form-actions">
+              <button id="secSaveBtn" class="primary-btn" type="submit">পাসওয়ার্ড সেভ করুন</button>
+            </div>
+          </form>
+
+          <section class="panel-card">
+            <header class="panel-head"><h2>🛡️ অ্যাডমিন তথ্য</h2></header>
+            <dl class="info-list">
+              <div><dt>পাসওয়ার্ড সেট</dt><dd id="secSetAt">—</dd></div>
+              <div><dt>সর্বশেষ পরিবর্তন</dt><dd id="secUpdatedAt">—</dd></div>
+              <div><dt>সর্বশেষ অ্যাডমিন লগইন</dt><dd id="secLastLogin">—</dd></div>
+              <div><dt>সেশন সময়সীমা</dt><dd id="secIdle">—</dd></div>
+              <div><dt>লক স্ট্যাটাস</dt><dd id="secLock">—</dd></div>
+              <div><dt>এই ডিভাইস</dt><dd id="secDevice">—</dd></div>
+              <div><dt>আইপি / লোকেশন</dt><dd id="secNetwork">—</dd></div>
+            </dl>
+            <div class="form-actions">
+              <button id="backupBtn" class="ghost-btn" type="button">⬇ ডাটাবেস ব্যাকআপ (JSON)</button>
+            </div>
+          </section>
+        </div>
+
+        <section class="panel-card danger-zone">
+          <header class="panel-head"><h2>⚠️ ডেঞ্জার জোন</h2><span>এই কাজগুলো ফিরিয়ে আনা যায় না</span></header>
+          <div class="danger-row">
+            <div>
+              <strong>সব ইউজার, প্রোমো ও লগ রিসেট</strong>
+              <p>অ্যাকাউন্ট ডাটাবেস, প্রোমো কোড, লগ ও সেশন মুছে যাবে। অ্যাডমিন পাসওয়ার্ড অপরিবর্তিত থাকবে।</p>
+            </div>
+            <button id="resetBtn" class="danger-btn" type="button">সব ডাটা রিসেট</button>
+          </div>
+        </section>
+      </section>
+
+      <!-- Settings -->
+      <section id="view-settings" class="view" hidden>
+        <form id="settingsForm" class="panel-card" novalidate>
+          <header class="panel-head"><h2>⚙️ পলিসি ও সীমা</h2><span>পরিবর্তন সাথে সাথে কার্যকর হবে</span></header>
+
+          <label class="check-field">
+            <input id="setRequireLogin" type="checkbox">
+            <span>
+              <strong>অ্যাকাউন্ট বাধ্যতামূলক</strong>
+              <small>বন্ধ রাখলে লগইন ছাড়াও সব ফিচার ব্যবহার করা যাবে (অ্যাডমিন প্যানেল তবুও পাসওয়ার্ড-সুরক্ষিত)।</small>
+            </span>
+          </label>
+
+          <div class="form-grid">
+            <label class="form-field">
+              <span>রেজিস্ট্রেশন ট্রায়াল (দিন)</span>
+              <input id="setTrialDays" type="number" min="0" max="3650" inputmode="numeric">
+            </label>
+            <label class="form-field">
+              <span>ইউজার সেশন (ঘণ্টা)</span>
+              <input id="setSessionHours" type="number" min="1" max="720" inputmode="numeric">
+            </label>
+            <label class="form-field">
+              <span>সর্বোচ্চ ভুল পাসওয়ার্ড চেষ্টা</span>
+              <input id="setMaxAttempts" type="number" min="3" max="20" inputmode="numeric">
+            </label>
+            <label class="form-field">
+              <span>লক সময় (মিনিট)</span>
+              <input id="setLockMinutes" type="number" min="1" max="1440" inputmode="numeric">
+            </label>
+            <label class="form-field">
+              <span>অ্যাডমিন নিষ্ক্রিয় লগআউট (মিনিট)</span>
+              <input id="setAdminIdle" type="number" min="5" max="240" inputmode="numeric">
+            </label>
+            <label class="form-field">
+              <span>ডিফল্ট অ্যাক্টিভেশন (দিন)</span>
+              <input id="setDefaultDays" type="number" min="1" max="3650" inputmode="numeric">
+            </label>
+            <label class="form-field">
+              <span>সর্বোচ্চ লগ সংরক্ষণ</span>
+              <input id="setLogLimit" type="number" min="200" max="5000" inputmode="numeric">
+            </label>
+          </div>
+
+          <div id="settingsMessage" class="form-message" role="status" hidden></div>
+          <div class="form-actions">
+            <button id="settingsSaveBtn" class="primary-btn" type="submit">সেটিংস সেভ করুন</button>
+            <button id="settingsReloadBtn" class="ghost-btn" type="button">রিসেট</button>
+          </div>
+        </form>
+
+        <section class="panel-card about-card">
+          <header class="panel-head"><h2>ℹ️ সিস্টেম তথ্য</h2></header>
+          <dl class="info-list">
+            <div><dt>এক্সটেনশন</dt><dd id="sysVersion">English Study</dd></div>
+            <div><dt>স্টোরেজ</dt><dd>chrome.storage.local (PBKDF2-SHA256 হ্যাশ)</dd></div>
+            <div><dt>সেশন</dt><dd>chrome.storage.session (ব্রাউজার বন্ধে মুছে যায়)</dd></div>
+            <div><dt>লগ সংখ্যা</dt><dd id="sysLogs">—</dd></div>
+            <div><dt>ইউজার / প্রোমো</dt><dd id="sysCounts">—</dd></div>
+          </dl>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div id="dialogHost"></div>
+  <div id="toastHost" class="toast-host" aria-live="polite"></div>
+
+  <script src="js/auth.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "English Study — Scan, Translate & Learn",
+  "short_name": "English Study",
+  "version": "1.1.0",
+  "description": "ক্রপ স্ক্যান, বাংলা অনুবাদ, ন্যাচারাল ভয়েস, শব্দভান্ডার, PDF স্টাডি চার্ট — সাথে ইউজার লগইন ও সুরক্ষিত অ্যাডমিন প্যানেল।",
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "scripting",
+    "sidePanel",
+    "storage",
+    "contextMenus",
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "English Study Side Panel খুলুন",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; base-uri 'self'"
+  }
+}

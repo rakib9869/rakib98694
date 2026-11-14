@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>English Study</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <div id="app" class="app">
+    <header class="app-header">
+      <div class="brand-row">
+        <div class="brand-logo" aria-hidden="true">A<span>অ</span></div>
+        <div class="brand-text">
+          <h1>English Study</h1>
+          <p>স্ক্যান • অনুবাদ • উচ্চারণ</p>
+        </div>
+        <div class="header-actions">
+          <div class="auth-nav" id="authNav">
+            <button id="authNavBtn" class="auth-nav-btn" type="button" aria-haspopup="menu" aria-expanded="false" title="লগইন ও অ্যাকাউন্ট">
+              <span id="authNavAvatar" class="auth-nav-avatar" aria-hidden="true">👤</span>
+              <span id="authNavLabel" class="auth-nav-label">লগইন</span>
+              <span class="auth-nav-caret" aria-hidden="true">▾</span>
+            </button>
+            <div id="authMenu" class="auth-menu" role="menu" hidden>
+              <div id="authMenuProfile" class="auth-menu-profile" hidden>
+                <span id="authMenuAvatar" class="auth-menu-avatar">👤</span>
+                <div>
+                  <strong id="authMenuName">—</strong>
+                  <small id="authMenuStatus">—</small>
+                </div>
+              </div>
+              <button id="menuUserAuth" class="auth-menu-item" type="button" role="menuitem">
+                <span class="auth-menu-icon">👤</span>
+                <span>
+                  <strong>ইউজার লগইন / রেজিস্ট্রেশন</strong>
+                  <small id="menuUserAuthNote">অ্যাকাউন্টে প্রবেশ করুন</small>
+                </span>
+              </button>
+              <button id="menuAdminLogin" class="auth-menu-item" type="button" role="menuitem">
+                <span class="auth-menu-icon">🛡️</span>
+                <span>
+                  <strong>অ্যাডমিন লগইন</strong>
+                  <small>শুধুমাত্র অনুমোদিত অ্যাডমিন</small>
+                </span>
+              </button>
+              <button id="menuAdminPanel" class="auth-menu-item" type="button" role="menuitem" hidden>
+                <span class="auth-menu-icon">🛠️</span>
+                <span>
+                  <strong>অ্যাডমিন প্যানেল</strong>
+                  <small>ড্যাশবোর্ড ও নিয়ন্ত্রণ</small>
+                </span>
+              </button>
+              <button id="menuLogout" class="auth-menu-item danger" type="button" role="menuitem" hidden>
+                <span class="auth-menu-icon">🚪</span>
+                <span>
+                  <strong>লগআউট</strong>
+                  <small>এই ডিভাইস থেকে প্রস্থান</small>
+                </span>
+              </button>
+            </div>
+          </div>
+          <button id="helpBtn" class="icon-button" type="button" title="সাহায্য" aria-label="সাহায্য">?</button>
+          <button id="settingsBtn" class="icon-button" type="button" title="সেটিংস" aria-label="সেটিংস">⚙️</button>
+        </div>
+      </div>
+      <div class="status-strip">
+        <span id="statusDot" class="status-dot ready" aria-hidden="true"></span>
+        <span id="statusText" class="status-text" aria-live="polite">প্রস্তুত</span>
+        <span id="sourceChip" class="source-chip" hidden></span>
+      </div>
+      <div id="accessBanner" class="access-banner" hidden>
+        <span id="accessBannerIcon" class="access-banner-icon" aria-hidden="true">🔒</span>
+        <div class="access-banner-copy">
+          <strong id="accessBannerTitle">অ্যাকাউন্ট প্রয়োজন</strong>
+          <span id="accessBannerText">লগইন করে অ্যাকাউন্ট সক্রিয় করুন।</span>
+        </div>
+        <button id="accessBannerAction" class="access-banner-btn" type="button">লগইন</button>
+      </div>
+    </header>
+
+    <nav class="tabs" role="tablist" aria-label="English Study সেকশন">
+      <button id="tabReaderBtn" class="tab active" type="button" role="tab" aria-selected="true" aria-controls="panel-reader" data-tab="reader">
+        <span class="tab-icon">📖</span> পড়া
+        <span id="readerTabBadge" class="tab-badge" hidden>0</span>
+      </button>
+      <button id="tabVocabBtn" class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-vocab" data-tab="vocab">
+        <span class="tab-icon">🔤</span> শব্দভান্ডার
+        <span id="vocabTabBadge" class="tab-badge" hidden>0</span>
+      </button>
+      <button id="tabExportBtn" class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-export" data-tab="export">
+        <span class="tab-icon">📤</span> এক্সপোর্ট
+      </button>
+    </nav>
+
+    <main id="mainScroll" class="main-scroll">
+      <!-- ============================ READER ============================ -->
+      <section id="panel-reader" class="tab-panel active" role="tabpanel" aria-labelledby="tabReaderBtn">
+        <div class="card scan-card">
+          <div class="card-head">
+            <div class="card-title-wrap">
+              <span class="step-badge">১</span>
+              <h2>লেখা স্ক্যান করুন</h2>
+            </div>
+            <span class="mini-tag">OCR</span>
+          </div>
+
+          <div class="scan-actions">
+            <button id="cropBtn" class="btn btn-primary btn-block" type="button">
+              <span class="btn-emoji">✂️</span>
+              <span>নির্দিষ্ট অংশ স্ক্যান (Crop)</span>
+            </button>
+            <button id="screenshotCropBtn" class="btn btn-soft" type="button" title="PDF বা যেকোনো পেজের স্ক্রিনশট থেকে অংশ নিন">
+              <span>📷</span> স্ক্রিনশট ক্রপ
+            </button>
+            <button id="imageBtn" class="btn btn-soft" type="button" title="কম্পিউটার থেকে ছবি নিয়ে OCR করুন">
+              <span>🖼️</span> ছবি থেকে
+            </button>
+            <input id="imageInput" type="file" accept="image/*" hidden>
+          </div>
+
+          <div id="ocrProgress" class="ocr-progress" hidden>
+            <div class="progress-track"><div id="ocrBar" class="progress-fill"></div></div>
+            <div class="progress-meta">
+              <span id="ocrStatus">OCR প্রস্তুত হচ্ছে…</span>
+              <span id="ocrPercent">0%</span>
+            </div>
+          </div>
+
+          <div class="editor-head">
+            <label for="sourceText">ইংরেজি লেখা <span class="muted">— স্ক্যানের পরে সরাসরি এডিট করুন</span></label>
+            <div class="mini-actions">
+              <button id="clearBtn" class="mini-btn" type="button" title="লেখা মুছুন" aria-label="লেখা মুছুন">🗑️</button>
+            </div>
+          </div>
+
+          <textarea id="sourceText" class="source-text" spellcheck="false" placeholder="এখানে ইংরেজি লেখা টাইপ/পেস্ট করুন, অথবা উপরের Crop বাটন দিয়ে পেজের নির্দিষ্ট অংশ স্ক্যান করুন…"></textarea>
+
+          <div class="editor-foot">
+            <span id="textStats" class="text-stats">০ শব্দ • ০ অক্ষর</span>
+            <span id="saveState" class="save-state"></span>
+          </div>
+
+          <div id="editorNotice" class="inline-note" hidden>
+            <span>লেখা পরিবর্তন হয়েছে — নিচের বাটনে চাপ দিয়ে অনুবাদ ও শব্দার্থ আপডেট করুন।</span>
+          </div>
+
+          <button id="updateBtn" class="btn btn-accent btn-block update-btn" type="button" disabled>
+            <span id="updateSpinner" class="spinner small" hidden aria-hidden="true"></span>
+            <span id="updateLabel">🔄 অনুবাদ ও শব্দার্থ আপডেট করুন</span>
+            <span class="kbd-hint"><kbd>Ctrl</kbd>+<kbd>Enter</kbd></span>
+          </button>
+        </div>
+
+        <div class="card translation-card">
+          <div class="card-head">
+            <div class="card-title-wrap">
+              <span class="step-badge">২</span>
+              <h2>অনুবাদ</h2>
+            </div>
+            <div class="lang-select-wrap">
+              <label class="sr-only" for="targetLang">অনুবাদের ভাষা</label>
+              <select id="targetLang" class="lang-select" title="অনুবাদের ভাষা"></select>
+            </div>
+          </div>
+
+          <div id="translationEmpty" class="empty-state">
+            <div class="empty-icon">🌐</div>
+            <strong>এখনও কোনো অনুবাদ নেই</strong>
+            <p>ইংরেজি লেখা স্ক্যান করুন বা টাইপ করে “আপডেট” বাটনে চাপ দিন।</p>
+          </div>
+
+          <div id="translationLoading" class="translation-loading" hidden>
+            <div class="skeleton-line wide"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line short"></div>
+            <p id="translationProgressText">অনুবাদ হচ্ছে…</p>
+          </div>
+
+          <div id="translationBody" hidden>
+            <div id="translationText" class="translation-text" dir="auto"></div>
+            <div class="translation-actions">
+              <button id="copyTranslationBtn" class="mini-link" type="button">📋 অনুবাদ কপি করুন</button>
+            </div>
+          </div>
+
+          <div class="voice-card">
+            <div class="voice-card-head">
+              <div class="voice-title"><span class="pulse-dot"></span> পড়ে শোনান</div>
+              <span id="engineHint" class="engine-hint">Natural TTS</span>
+            </div>
+
+            <div class="voice-row">
+              <button id="speakEnglishUsBtn" class="voice-btn" type="button" disabled>
+                <span>🇺🇸</span> US English
+              </button>
+              <button id="speakEnglishUkBtn" class="voice-btn" type="button" disabled>
+                <span>🇬🇧</span> UK English
+              </button>
+              <button id="speakTranslationBtn" class="voice-btn translation-voice" type="button" disabled>
+                <span>🔊</span> <span id="translationVoiceLabel">বাংলা</span>
+              </button>
+            </div>
+
+            <div class="playback-row">
+              <button id="playPauseBtn" class="round-btn play-btn" type="button" title="Play / Pause" aria-label="Play বা Pause">▶</button>
+              <button id="stopBtn" class="round-btn stop-btn" type="button" title="Stop" aria-label="Stop" disabled>⏹</button>
+              <div class="now-readout">
+                <span id="playbackState">বন্ধ</span>
+                <span id="rateValue" class="rate-value">1.0x</span>
+              </div>
+            </div>
+
+            <div class="speed-block">
+              <div class="speed-head">
+                <span>ভয়েস স্পিড</span>
+                <span class="speed-hint">0.5x — 1.8x</span>
+              </div>
+              <input id="rateSlider" class="rate-slider" type="range" min="0.5" max="1.8" step="0.05" value="1" aria-label="ভয়েসের গতি">
+              <div class="rate-presets" role="group" aria-label="দ্রুত গতির প্রিসেট">
+                <button class="rate-preset" type="button" data-rate="0.7">0.7x ধীরে</button>
+                <button class="rate-preset active" type="button" data-rate="1">1.0x স্বাভাবিক</button>
+                <button class="rate-preset" type="button" data-rate="1.25">1.25x দ্রুত</button>
+                <button class="rate-preset" type="button" data-rate="1.5">1.5x অতি দ্রুত</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="sentencesCard" class="card sentences-card" hidden>
+          <div class="card-head">
+            <div class="card-title-wrap">
+              <span class="step-badge">৩</span>
+              <h2>লাইন-বাই-লাইন</h2>
+            </div>
+            <span id="sentenceCount" class="mini-tag">০ বাক্য</span>
+          </div>
+          <div class="sentence-tools">
+            <button id="playAllEnglishBtn" class="mini-btn strong" type="button">▶ সব ইংরেজি</button>
+            <button id="playAllTranslationBtn" class="mini-btn strong" type="button">▶ সব অনুবাদ</button>
+          </div>
+          <div id="sentenceList" class="sentence-list"></div>
+        </div>
+      </section>
+
+      <!-- ============================ VOCAB ============================ -->
+      <section id="panel-vocab" class="tab-panel" role="tabpanel" aria-labelledby="tabVocabBtn">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title-wrap">
+              <span class="step-badge">২</span>
+              <h2>শব্দের অর্থের ভান্ডার</h2>
+            </div>
+            <span id="vocabCount" class="mini-tag">০ শব্দ</span>
+          </div>
+
+          <div class="vocab-tools">
+            <input id="vocabSearch" class="search-input" type="search" placeholder="ইংরেজি / বাংলা / উচ্চারণ দিয়ে খুঁজুন…" autocomplete="off">
+            <button id="vocabSortBtn" class="mini-btn strong" type="button" title="সাজানোর ক্রম">A–Z</button>
+          </div>
+
+          <div id="vocabProgress" class="vocab-progress" hidden>
+            <div class="progress-track"><div id="vocabBar" class="progress-fill teal"></div></div>
+            <span id="vocabProgressText">শব্দার্থ তৈরি হচ্ছে…</span>
+          </div>
+
+          <div id="vocabEmpty" class="empty-state">
+            <div class="empty-icon">🔤</div>
+            <strong>শব্দভান্ডার এখনও খালি</strong>
+            <p>লেখা স্ক্যান করে “আপডেট” চাপ দিলে গুরুত্বপূর্ণ শব্দগুলো এখানে আসবে।</p>
+          </div>
+
+          <div id="vocabList" class="vocab-list"></div>
+
+          <button id="retryVocabBtn" class="btn btn-soft btn-block retry-vocab" type="button" hidden>
+            🔄 শব্দার্থ আবার লোড করুন
+          </button>
+        </div>
+
+        <div class="tip-card">
+          <span class="tip-icon">💡</span>
+          <p>প্রতিটি শব্দের পাশের 🔊 বাটনে ক্লিক করলে আগে ইংরেজি উচ্চারণ, তারপর বাংলা অর্থ শোনা যাবে।</p>
+        </div>
+      </section>
+
+      <!-- ============================ EXPORT ============================ -->
+      <section id="panel-export" class="tab-panel" role="tabpanel" aria-labelledby="tabExportBtn">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title-wrap">
+              <span class="step-badge">৩</span>
+              <h2>TXT ফাইল ডাউনলোড</h2>
+            </div>
+            <span class="mini-tag">UTF-8</span>
+          </div>
+
+          <p class="section-desc">যেগুলো TXT ফাইলে চান সেগুলো টিক দিন। বাংলা লেখা Windows Notepad-এও ঠিকভাবে দেখা যাবে।</p>
+
+          <div class="export-checks">
+            <label class="check-row">
+              <input id="exportMeta" type="checkbox" checked>
+              <span><strong>শিরোনাম ও সোর্স তথ্য</strong><small>পেজের নাম, লিংক, তারিখ</small></span>
+            </label>
+            <label class="check-row">
+              <input id="exportEnglish" type="checkbox" checked>
+              <span><strong>মূল ইংরেজি প্যাসেজ</strong><small>এডিট করা সম্পূর্ণ লেখা</small></span>
+            </label>
+            <label class="check-row">
+              <input id="exportTranslation" type="checkbox" checked>
+              <span><strong>সম্পূর্ণ অনুবাদ</strong><small id="exportTranslationLabel">বাংলা অনুবাদ</small></span>
+            </label>
+            <label class="check-row">
+              <input id="exportSentences" type="checkbox" checked>
+              <span><strong>লাইন-বাই-লাইন অর্থ</strong><small>ইংরেজি বাক্য + অনুবাদ</small></span>
+            </label>
+            <label class="check-row">
+              <input id="exportVocab" type="checkbox" checked>
+              <span><strong>শব্দভান্ডার</strong><small>শব্দ + উচ্চারণ + অর্থ</small></span>
+            </label>
+          </div>
+
+          <div class="export-stats" id="exportStats"></div>
+
+          <button id="downloadTxtBtn" class="btn btn-primary btn-block" type="button">⬇️ নির্বাচিত অংশ TXT ডাউনলোড</button>
+          <button id="copyAllBtn" class="btn btn-soft btn-block" type="button">📋 সব লেখা একসাথে কপি করুন</button>
+
+          <div class="quick-export">
+            <span>দ্রুত ডাউনলোড:</span>
+            <button id="quickEnglishBtn" class="chip-btn" type="button">শুধু ইংরেজি</button>
+            <button id="quickTranslationBtn" class="chip-btn" type="button">শুধু অনুবাদ</button>
+            <button id="quickVocabBtn" class="chip-btn" type="button">শুধু শব্দভান্ডার</button>
+          </div>
+        </div>
+
+        <div class="card pdf-card">
+          <div class="card-head">
+            <div class="card-title-wrap">
+              <span class="step-badge">PDF</span>
+              <h2>স্টাডি চার্ট</h2>
+            </div>
+            <span class="mini-tag">Print / PDF</span>
+          </div>
+
+          <div class="pdf-preview" aria-hidden="true">
+            <div class="pdf-sheet">
+              <div class="pdf-band"></div>
+              <div class="pdf-line title"></div>
+              <div class="pdf-line"></div>
+              <div class="pdf-line short"></div>
+              <div class="pdf-grid">
+                <span></span><span></span>
+                <span></span><span></span>
+                <span></span><span></span>
+              </div>
+            </div>
+            <div class="pdf-badge">A4</div>
+          </div>
+
+          <p class="section-desc">মূল ইংরেজি প্যাসেজ, সম্পূর্ণ অনুবাদ, লাইন-বাই-লাইন টেবিল এবং শব্দার্থের বক্সসহ পরিচ্ছন্ন, প্রিন্ট-রেডি স্টাডি শিট তৈরি হবে।</p>
+
+          <button id="printPdfBtn" class="btn btn-accent btn-block" type="button" disabled>📄 স্টাডি চার্ট PDF তৈরি করুন</button>
+          <p class="fine-print">প্রিন্ট ডায়ালগ খুললে Destination থেকে <strong>Save as PDF</strong> নির্বাচন করুন।</p>
+        </div>
+
+        <div class="card data-card">
+          <div class="card-head">
+            <h2>বর্তমান নোটের সারসংক্ষেপ</h2>
+          </div>
+          <div class="data-grid">
+            <div class="data-item"><strong id="dataWords">০</strong><span>শব্দ</span></div>
+            <div class="data-item"><strong id="dataSentences">০</strong><span>বাক্য</span></div>
+            <div class="data-item"><strong id="dataVocab">০</strong><span>শব্দার্থ</span></div>
+          </div>
+          <p id="dataUpdated" class="data-updated"></p>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============================ NOW PLAYING ============================ -->
+    <div id="nowPlaying" class="now-playing" hidden>
+      <div class="equalizer" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <div class="now-playing-copy">
+        <strong id="nowPlayingLabel">পড়া হচ্ছে…</strong>
+        <small id="nowPlayingMode">Natural voice</small>
+      </div>
+      <button id="npPauseBtn" class="np-btn" type="button" title="Pause / Resume">⏸</button>
+      <button id="npStopBtn" class="np-btn" type="button" title="Stop">⏹</button>
+    </div>
+
+    <div id="toastHost" class="toast-host" aria-live="polite" aria-atomic="false"></div>
+
+    <!-- ============================ SETTINGS ============================ -->
+    <dialog id="settingsDialog" class="modal">
+      <div class="modal-head">
+        <div>
+          <h2>সেটিংস</h2>
+          <p>ভয়েস, OCR ও ডেটা নিয়ন্ত্রণ</p>
+        </div>
+        <button id="settingsCloseBtn" class="modal-close" type="button" aria-label="বন্ধ করুন">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <h3>ভয়েস ইঞ্জিন</h3>
+          <p class="setting-help">Auto হলে প্রথমে Google Cloud TTS চেষ্টা করবে, ব্যর্থ হলে ব্রাউজারের সেরা Natural ভয়েস ব্যবহার করবে।</p>
+          <select id="ttsEngineSelect" class="setting-select">
+            <option value="auto">Auto — Cloud, তারপর Browser</option>
+            <option value="cloud">Cloud TTS (Google)</option>
+            <option value="browser">Browser Voice</option>
+          </select>
+        </div>
+
+        <div class="setting-group">
+          <h3>ব্রাউজার ফলব্যাক ভয়েস</h3>
+          <p class="setting-help">Cloud TTS কাজ না করলে বা Browser ইঞ্জিন বেছে নিলে এই ভয়েস ব্যবহার হবে।</p>
+
+          <label class="setting-label" for="voiceUsSelect">US English</label>
+          <select id="voiceUsSelect" class="setting-select voice-select"></select>
+
+          <label class="setting-label" for="voiceUkSelect">UK English</label>
+          <select id="voiceUkSelect" class="setting-select voice-select"></select>
+
+          <label class="setting-label" for="voiceBnSelect">বাংলা (bn-BD)</label>
+          <select id="voiceBnSelect" class="setting-select voice-select"></select>
+
+          <div class="test-voice-row">
+            <button id="testUsBtn" class="chip-btn" type="button">🇺🇸 টেস্ট</button>
+            <button id="testUkBtn" class="chip-btn" type="button">🇬🇧 টেস্ট</button>
+            <button id="testBnBtn" class="chip-btn" type="button">🔊 বাংলা টেস্ট</button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <h3>OCR ও শব্দভান্ডার</h3>
+          <label class="check-row compact">
+            <input id="enhanceOcrCheckbox" type="checkbox" checked>
+            <span><strong>OCR ইমেজ উন্নত করুন</strong><small>উজ্জ্বলতা, কনট্রাস্ট ও ছোট লেখা বড় করা</small></span>
+          </label>
+          <label class="check-row compact">
+            <input id="autoTranslateCheckbox" type="checkbox" checked>
+            <span><strong>স্ক্যানের পরে স্বয়ংক্রিয় অনুবাদ</strong><small>OCR শেষ হলে নিজে থেকেই অনুবাদ ও শব্দার্থ তৈরি হবে</small></span>
+          </label>
+          <label class="setting-label" for="vocabLimitSelect">শব্দভান্ডারে সর্বোচ্চ শব্দ</label>
+          <select id="vocabLimitSelect" class="setting-select">
+            <option value="30">৩০টি</option>
+            <option value="45" selected>৪৫টি</option>
+            <option value="60">৬০টি</option>
+          </select>
+        </div>
+
+        <div class="setting-group">
+          <h3>ডেটা ও ক্যাশ</h3>
+          <p class="setting-help">পড়া, অনুবাদ ও শব্দার্থ শুধু আপনার ব্রাউজারে সংরক্ষিত থাকে।</p>
+          <button id="clearCacheBtn" class="btn btn-soft btn-block" type="button">🧹 অনুবাদ ও শব্দের ক্যাশ মুছুন</button>
+          <button id="resetOcrBtn" class="btn btn-soft btn-block" type="button">♻️ OCR ইঞ্জিন রিসেট করুন</button>
+          <button id="clearAllBtn" class="btn btn-danger btn-block" type="button">🗑️ সব সংরক্ষিত ডেটা মুছুন</button>
+        </div>
+
+        <div class="setting-group about">
+          <h3>English Study v1.0</h3>
+          <p>OCR সম্পূর্ণ লোকাল (Tesseract.js)। অনুবাদ, অভিধান ও Cloud TTS-এর জন্য ইন্টারনেট প্রয়োজন। আপনার পড়া কোনো সার্ভারে সংরক্ষণ করা হয় না।</p>
+          <p class="credits">Tesseract.js • dictionaryapi.dev • Google Translate</p>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- ============================ HELP ============================ -->
+    <dialog id="helpDialog" class="modal">
+      <div class="modal-head">
+        <div>
+          <h2>সাহায্য ও টিপস</h2>
+          <p>কীভাবে ব্যবহার করবেন</p>
+        </div>
+        <button id="helpCloseBtn" class="modal-close" type="button" aria-label="বন্ধ করুন">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="help-step"><span>১</span><p><strong>ওয়েবপেজ / PDF:</strong> “নির্দিষ্ট অংশ স্ক্যান (Crop)” চাপুন, পেজের ওপর ইংরেজি অংশটি মাউস দিয়ে টেনে সিলেক্ট করুন। PDF বা ব্লক করা পেজে স্বয়ংক্রিয়ভাবে “স্ক্রিনশট ক্রপ” খুলবে।</p></div>
+        <div class="help-step"><span>২</span><p><strong>এডিট ও আপডেট:</strong> OCR লেখা বক্সে ঠিক করুন, তারপর “অনুবাদ ও শব্দার্থ আপডেট করুন” চাপুন।</p></div>
+        <div class="help-step"><span>৩</span><p><strong>ভয়েস:</strong> US/UK ইংরেজি বা বাংলা বাটনে চেপে শুনুন। স্লাইডার ও প্রিসেট দিয়ে গতি বদলান। Pause/Resume ও Stop সব ভয়েসে কাজ করে।</p></div>
+        <div class="help-step"><span>৪</span><p><strong>শব্দভান্ডার:</strong> দ্বিতীয় ট্যাবে শব্দগুলো <em>Word (উচ্চারণ) = অর্থ</em> আকারে পাবেন। 🔊 চাপলে উচ্চারণ ও অর্থ শোনা যায়।</p></div>
+        <div class="help-step"><span>৫</span><p><strong>এক্সপোর্ট:</strong> TXT ডাউনলোড করুন, অথবা PDF স্টাডি চার্ট তৈরি করে প্রিন্ট ডায়ালগে Save as PDF বেছে নিন।</p></div>
+
+        <div class="help-note">
+          <strong>PDF / লোকাল ফাইল:</strong>
+          <p><code>file:///...</code> পেজে কাজ করতে <code>chrome://extensions</code> → English Study → Details → <strong>Allow access to file URLs</strong> চালু করুন। PDF পেজে সরাসরি ওভারলে কাজ না করলে স্ক্রিনশট ক্রপ ব্যবহার করুন।</p>
+        </div>
+
+        <div class="help-note">
+          <strong>সমস্যা হলে:</strong>
+          <p>অনুবাদ না এলে ইন্টারনেট সংযোগ পরীক্ষা করুন। Cloud ভয়েস না চললে সেটিংসে Browser Voice বেছে নিন। OCR ধীর হলে ছোট অংশ স্ক্যান করুন।</p>
+        </div>
+
+        <div class="help-note">
+          <strong>কীবোর্ড:</strong>
+          <p><kbd>Ctrl</kbd>+<kbd>Enter</kbd> — আপডেট • <kbd>Esc</kbd> — ক্রপ বাতিল • <kbd>Enter</kbd> — ক্রপ নিশ্চিত</p>
+        </div>
+
+        <button id="openExtensionsBtn" class="btn btn-soft btn-block" type="button">🧩 এক্সটেনশন সেটিংস পেজ খুলুন</button>
+      </div>
+    </dialog>
+
+    <!-- ============================ AUTH (USER) ============================ -->
+    <div id="authModal" class="auth-modal" hidden aria-hidden="true">
+      <div class="auth-backdrop" data-auth-close="1"></div>
+      <div class="auth-stage">
+        <div class="auth-scene">
+          <section id="authCard" class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+            <span class="auth-orb auth-orb-a" aria-hidden="true"></span>
+            <span class="auth-orb auth-orb-b" aria-hidden="true"></span>
+            <span class="auth-orb auth-orb-c" aria-hidden="true"></span>
+            <span class="auth-sheen" aria-hidden="true"></span>
+
+            <button id="authCloseBtn" class="auth-close" type="button" aria-label="বন্ধ করুন">✕</button>
+
+            <header class="auth-brand">
+              <div class="auth-logo" aria-hidden="true">A<span>অ</span></div>
+              <div>
+                <h2 id="authTitle">English Study</h2>
+                <p>আপনার ব্যক্তিগত শেখার অ্যাকাউন্ট</p>
+              </div>
+            </header>
+
+            <div class="auth-switch" role="tablist" aria-label="লগইন বা রেজিস্ট্রেশন">
+              <span id="authSwitchGlow" class="auth-switch-glow" aria-hidden="true"></span>
+              <button id="authTabLogin" class="auth-switch-btn active" type="button" role="tab" aria-selected="true">লগইন</button>
+              <button id="authTabRegister" class="auth-switch-btn" type="button" role="tab" aria-selected="false">রেজিস্ট্রেশন</button>
+            </div>
+
+            <div id="authTrialNote" class="auth-trial" hidden>
+              <span aria-hidden="true">🎁</span>
+              <p id="authTrialText">নতুন অ্যাকাউন্টে ট্রায়াল সুবিধা রয়েছে।</p>
+            </div>
+
+            <form id="loginForm" class="auth-form" novalidate>
+              <label class="auth-field" for="loginIdentifier">
+                <span class="auth-label">ইমেইল / ফোন নম্বর / ইউজারনেম</span>
+                <span class="auth-input-wrap">
+                  <span class="auth-input-icon" aria-hidden="true">@</span>
+                  <input id="loginIdentifier" type="text" inputmode="text" autocomplete="username" placeholder="example@gmail.com / 017… / username" spellcheck="false">
+                </span>
+              </label>
+
+              <label class="auth-field" for="loginPassword">
+                <span class="auth-label">পাসওয়ার্ড</span>
+                <span class="auth-input-wrap">
+                  <span class="auth-input-icon" aria-hidden="true">🔒</span>
+                  <input id="loginPassword" type="password" autocomplete="current-password" placeholder="আপনার পাসওয়ার্ড">
+                  <button class="pass-toggle" type="button" data-pass-toggle="loginPassword" aria-label="পাসওয়ার্ড দেখুন">👁</button>
+                </span>
+              </label>
+
+              <span id="loginCaps" class="auth-caps" hidden>Caps Lock চালু আছে</span>
+              <div id="loginError" class="auth-error" role="alert" hidden></div>
+
+              <button id="loginSubmitBtn" class="auth-submit" type="submit">
+                <span id="loginSubmitLabel">লগইন করুন</span>
+                <span class="auth-submit-arrow" aria-hidden="true">→</span>
+              </button>
+
+              <button id="forgotHintBtn" class="auth-link" type="button">পাসওয়ার্ড ভুলে গেছেন?</button>
+              <p class="auth-note">অ্যাকাউন্ট না থাকলে উপরের <strong>রেজিস্ট্রেশন</strong> ট্যাবটি খুলুন।</p>
+            </form>
+
+            <form id="registerForm" class="auth-form" novalidate hidden>
+              <p class="auth-form-hint">ইমেইল, ফোন নম্বর অথবা ইউজারনেম — অন্তত একটি দিলেই হবে।</p>
+
+              <div class="auth-grid">
+                <label class="auth-field" for="regUsername">
+                  <span class="auth-label">ইউজারনেম <em>ঐচ্ছিক</em></span>
+                  <span class="auth-input-wrap">
+                    <span class="auth-input-icon" aria-hidden="true">#</span>
+                    <input id="regUsername" type="text" autocomplete="username" placeholder="study_user" spellcheck="false">
+                  </span>
+                </label>
+                <label class="auth-field" for="regPhone">
+                  <span class="auth-label">ফোন নম্বর <em>ঐচ্ছিক</em></span>
+                  <span class="auth-input-wrap">
+                    <span class="auth-input-icon" aria-hidden="true">📱</span>
+                    <input id="regPhone" type="tel" autocomplete="tel" placeholder="017XXXXXXXX">
+                  </span>
+                </label>
+              </div>
+
+              <label class="auth-field" for="regEmail">
+                <span class="auth-label">জিমেইল / ইমেইল <em>ঐচ্ছিক</em></span>
+                <span class="auth-input-wrap">
+                  <span class="auth-input-icon" aria-hidden="true">✉</span>
+                  <input id="regEmail" type="email" autocomplete="email" placeholder="you@gmail.com" spellcheck="false">
+                </span>
+              </label>
+
+              <div class="auth-grid">
+                <label class="auth-field" for="regPassword">
+                  <span class="auth-label">পাসওয়ার্ড</span>
+                  <span class="auth-input-wrap">
+                    <span class="auth-input-icon" aria-hidden="true">🔒</span>
+                    <input id="regPassword" type="password" autocomplete="new-password" placeholder="কমপক্ষে ৮ অক্ষর">
+                    <button class="pass-toggle" type="button" data-pass-toggle="regPassword" aria-label="পাসওয়ার্ড দেখুন">👁</button>
+                  </span>
+                </label>
+                <label class="auth-field" for="regConfirm">
+                  <span class="auth-label">পাসওয়ার্ড আবার</span>
+                  <span class="auth-input-wrap">
+                    <span class="auth-input-icon" aria-hidden="true">🔁</span>
+                    <input id="regConfirm" type="password" autocomplete="new-password" placeholder="একই পাসওয়ার্ড">
+                  </span>
+                </label>
+              </div>
+
+              <div class="auth-strength" aria-live="polite">
+                <span class="auth-strength-bars" aria-hidden="true">
+                  <i></i><i></i><i></i><i></i>
+                </span>
+                <span id="regStrengthText" class="auth-strength-text">পাসওয়ার্ড শক্তি</span>
+              </div>
+
+              <div id="registerError" class="auth-error" role="alert" hidden></div>
+
+              <button id="registerSubmitBtn" class="auth-submit" type="submit">
+                <span id="registerSubmitLabel">অ্যাকাউন্ট তৈরি করুন</span>
+                <span class="auth-submit-arrow" aria-hidden="true">→</span>
+              </button>
+
+              <p class="auth-note">রেজিস্ট্রেশন করলেই ব্যবহারের শর্তাবলি মেনে নিচ্ছেন। পাসওয়ার্ড শুধুমাত্র হ্যাশ আকারে সংরক্ষিত হয়।</p>
+            </form>
+
+            <footer class="auth-footer">
+              <span class="auth-secure-dot" aria-hidden="true"></span>
+              <span>লোকাল এনক্রিপ্টেড অ্যাকাউন্ট • পাসওয়ার্ড কখনো সংরক্ষণ করা হয় না</span>
+            </footer>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================ AUTH (ADMIN) ============================ -->
+    <div id="adminModal" class="auth-modal admin-modal" hidden aria-hidden="true">
+      <div class="auth-backdrop" data-admin-close="1"></div>
+      <div class="auth-stage">
+        <div class="auth-scene">
+          <section id="adminCard" class="auth-card admin-card" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+            <span class="auth-orb admin-orb-a" aria-hidden="true"></span>
+            <span class="auth-orb admin-orb-b" aria-hidden="true"></span>
+            <span class="auth-sheen" aria-hidden="true"></span>
+
+            <button id="adminCloseBtn" class="auth-close" type="button" aria-label="বন্ধ করুন">✕</button>
+
+            <div class="admin-shield" aria-hidden="true">
+              <span>🛡️</span>
+            </div>
+            <h2 id="adminTitle">অ্যাডমিন লগইন</h2>
+            <p id="adminSubtitle" class="admin-subtitle">শুধুমাত্র অনুমোদিত অ্যাডমিন এই প্যানেলে প্রবেশ করতে পারবেন।</p>
+
+            <form id="adminLoginForm" class="auth-form" novalidate>
+              <label class="auth-field" for="adminPassword">
+                <span class="auth-label">অ্যাডমিন পাসওয়ার্ড</span>
+                <span class="auth-input-wrap">
+                  <span class="auth-input-icon" aria-hidden="true">🔑</span>
+                  <input id="adminPassword" type="password" autocomplete="off" placeholder="আপনার গোপন অ্যাডমিন পাসওয়ার্ড">
+                  <button class="pass-toggle" type="button" data-pass-toggle="adminPassword" aria-label="পাসওয়ার্ড দেখুন">👁</button>
+                </span>
+              </label>
+
+              <label id="adminConfirmField" class="auth-field" for="adminConfirm" hidden>
+                <span class="auth-label">পাসওয়ার্ড আবার লিখুন</span>
+                <span class="auth-input-wrap">
+                  <span class="auth-input-icon" aria-hidden="true">🔁</span>
+                  <input id="adminConfirm" type="password" autocomplete="off" placeholder="একই পাসওয়ার্ড">
+                </span>
+              </label>
+
+              <div id="adminStrength" class="auth-strength" hidden>
+                <span class="auth-strength-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                <span id="adminStrengthText" class="auth-strength-text">পাসওয়ার্ড শক্তি</span>
+              </div>
+
+              <div id="adminError" class="auth-error" role="alert" hidden></div>
+              <p id="adminLockNote" class="auth-note" hidden></p>
+              <p id="adminSetupNote" class="auth-note" hidden>
+                প্রথমবার ব্যবহার: একটি শক্তিশালী অ্যাডমিন পাসওয়ার্ড সেট করুন। এটি শুধু হ্যাশ আকারে এই ব্রাউজারে সংরক্ষিত হবে।
+              </p>
+
+              <button id="adminSubmitBtn" class="auth-submit admin-submit" type="submit">
+                <span id="adminSubmitLabel">প্রবেশ করুন</span>
+                <span class="auth-submit-arrow" aria-hidden="true">🔓</span>
+              </button>
+            </form>
+
+            <div class="admin-meta">
+              <span>🔐 সেশন শুধু মেমরিতে • ২০ মিনিট নিষ্ক্রিয় থাকলে স্বয়ংক্রিয় লগআউট</span>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================ ACCOUNT ============================ -->
+    <div id="accountModal" class="auth-modal account-modal" hidden aria-hidden="true">
+      <div class="auth-backdrop" data-account-close="1"></div>
+      <div class="auth-stage">
+        <div class="auth-scene">
+          <section id="accountCard" class="auth-card account-card" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
+            <span class="auth-orb account-orb-a" aria-hidden="true"></span>
+            <span class="auth-sheen" aria-hidden="true"></span>
+            <button id="accountCloseBtn" class="auth-close" type="button" aria-label="বন্ধ করুন">✕</button>
+
+            <header class="account-head">
+              <div id="accountAvatar" class="account-avatar">👤</div>
+              <div class="account-head-copy">
+                <h2 id="accountTitle">আমার অ্যাকাউন্ট</h2>
+                <p id="accountHandle">—</p>
+              </div>
+              <span id="accountStatusChip" class="account-status-chip">—</span>
+            </header>
+
+            <div class="account-validity">
+              <div class="account-validity-head">
+                <span>অ্যাকাউন্টের মেয়াদ</span>
+                <strong id="accountDaysLeft">—</strong>
+              </div>
+              <div class="account-validity-track"><div id="accountValidityBar" class="account-validity-fill"></div></div>
+              <p id="accountExpiryText" class="account-validity-text">—</p>
+            </div>
+
+            <div class="account-grid">
+              <div class="account-cell"><span>ইউজারনেম</span><strong id="accountUsername">—</strong></div>
+              <div class="account-cell"><span>ইমেইল</span><strong id="accountEmail">—</strong></div>
+              <div class="account-cell"><span>ফোন</span><strong id="accountPhone">—</strong></div>
+              <div class="account-cell"><span>সর্বশেষ লগইন</span><strong id="accountLastLogin">—</strong></div>
+              <div class="account-cell wide"><span>এই ডিভাইস</span><strong id="accountDevice">—</strong></div>
+              <div class="account-cell wide"><span>আইপি / লোকেশন</span><strong id="accountNetwork">—</strong></div>
+            </div>
+
+            <section class="account-promo">
+              <div class="account-section-head">
+                <h3>🎟️ প্রোমো কোড</h3>
+                <span>কোড দিয়ে মেয়াদ বাড়ান</span>
+              </div>
+              <form id="promoForm" class="promo-form">
+                <input id="promoInput" type="text" placeholder="যেমন: STUDY7" autocomplete="off" spellcheck="false" maxlength="24">
+                <button id="promoSubmitBtn" type="submit">প্রয়োগ করুন</button>
+              </form>
+              <div id="promoMessage" class="promo-message" role="status" hidden></div>
+              <ul id="accountPromoList" class="account-promo-list" hidden></ul>
+            </section>
+
+            <details class="account-security">
+              <summary>🔑 পাসওয়ার্ড পরিবর্তন</summary>
+              <form id="passwordForm" class="auth-form">
+                <label class="auth-field" for="currentPassword">
+                  <span class="auth-label">বর্তমান পাসওয়ার্ড</span>
+                  <span class="auth-input-wrap">
+                    <span class="auth-input-icon" aria-hidden="true">🔒</span>
+                    <input id="currentPassword" type="password" autocomplete="current-password" placeholder="বর্তমান পাসওয়ার্ড">
+                  </span>
+                </label>
+                <div class="auth-grid">
+                  <label class="auth-field" for="newPassword">
+                    <span class="auth-label">নতুন পাসওয়ার্ড</span>
+                    <span class="auth-input-wrap">
+                      <span class="auth-input-icon" aria-hidden="true">✨</span>
+                      <input id="newPassword" type="password" autocomplete="new-password" placeholder="নতুন পাসওয়ার্ড">
+                    </span>
+                  </label>
+                  <label class="auth-field" for="confirmPassword">
+                    <span class="auth-label">নতুন পাসওয়ার্ড আবার</span>
+                    <span class="auth-input-wrap">
+                      <span class="auth-input-icon" aria-hidden="true">🔁</span>
+                      <input id="confirmPassword" type="password" autocomplete="new-password" placeholder="একই পাসওয়ার্ড">
+                    </span>
+                  </label>
+                </div>
+                <div id="passwordMessage" class="auth-error" role="alert" hidden></div>
+                <button class="auth-submit" type="submit"><span>পাসওয়ার্ড সেভ করুন</span><span class="auth-submit-arrow">→</span></button>
+              </form>
+            </details>
+
+            <div class="account-actions">
+              <button id="accountLogoutBtn" class="auth-submit account-logout" type="button"><span>লগআউট</span><span aria-hidden="true">🚪</span></button>
+              <button id="accountCloseBtn2" class="account-secondary" type="button">বন্ধ করুন</button>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================ CHOICE ============================ -->
+    <dialog id="choiceDialog" class="modal choice-modal">
+      <div class="modal-head">
+        <div>
+          <h2 id="choiceTitle">নিশ্চিত করুন</h2>
+          <p id="choiceMessage"></p>
+        </div>
+      </div>
+      <div id="choiceButtons" class="choice-buttons"></div>
+    </dialog>
+  </div>
+
+  <script src="vendor/tesseract/tesseract.min.js"></script>
+  <script src="js/text.js"></script>
+  <script src="js/tts.js"></script>
+  <script src="js/translate.js"></script>
+  <script src="js/ocr.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/auth-ui.js"></script>
+  <script src="sidepanel.js"></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>English Study — স্ক্রিনশট ক্রপ</title>
+  <link rel="stylesheet" href="crop.css">
+</head>
+<body>
+  <header class="crop-header">
+    <div class="brand">
+      <div class="brand-mark">A<span>অ</span></div>
+      <div class="brand-copy">
+        <h1>স্ক্রিনশট থেকে অংশ নির্বাচন</h1>
+        <p>মাউস দিয়ে ইংরেজি অংশটি টেনে সিলেক্ট করুন</p>
+      </div>
+    </div>
+
+    <div class="tools">
+      <div class="zoom-group" aria-label="জুম নিয়ন্ত্রণ">
+        <button id="zoomOutBtn" class="icon-btn" type="button" title="জুম কমান">−</button>
+        <span id="zoomLabel" class="zoom-label">100%</span>
+        <button id="zoomInBtn" class="icon-btn" type="button" title="জুম বাড়ান">+</button>
+        <button id="fitBtn" class="soft-btn" type="button" title="পুরো ছবি দেখান">Fit</button>
+      </div>
+      <button id="scanBtn" class="primary-btn" type="button" disabled>✂️ সিলেক্ট করা অংশ স্ক্যান করুন</button>
+      <button id="closeBtn" class="icon-btn close-btn" type="button" title="বাতিল (Esc)">✕</button>
+    </div>
+  </header>
+
+  <main id="viewport" class="viewport">
+    <div id="stage" class="stage" hidden>
+      <img id="shot" alt="পেজের স্ক্রিনশট" draggable="false">
+      <div id="selection" class="selection" hidden>
+        <span id="sizeLabel" class="size-label"></span>
+      </div>
+    </div>
+
+    <div id="loading" class="state-box">
+      <div class="spinner" aria-hidden="true"></div>
+      <p>স্ক্রিনশট প্রস্তুত হচ্ছে…</p>
+    </div>
+
+    <div id="errorBox" class="state-box error" hidden>
+      <div class="state-icon">⚠️</div>
+      <h2>স্ক্রিনশট পাওয়া যায়নি</h2>
+      <p id="errorText">আবার সাইড প্যানেল থেকে “স্ক্রিনশট ক্রপ” চেষ্টা করুন।</p>
+      <button id="errorCloseBtn" class="soft-btn" type="button">বন্ধ করুন</button>
+    </div>
+
+    <div id="working" class="working" hidden>
+      <div class="spinner" aria-hidden="true"></div>
+      <p>নির্বাচিত অংশ প্রস্তুত হচ্ছে…</p>
+    </div>
+  </main>
+
+  <footer class="crop-footer">
+    <div class="tip">💡 ছোট লেখার জন্য জুম বাড়িয়ে নিন। নতুন সিলেকশনের জন্য আবার টেনে ধরুন।</div>
+    <div class="actions">
+      <button id="cancelBtn" class="ghost-btn" type="button">বাতিল করুন</button>
+      <span id="selectionInfo" class="selection-info">কোনো অংশ নির্বাচন করা হয়নি</span>
+    </div>
+  </footer>
+
+  <script src="crop.js"></script>
+</body>
+</html>
